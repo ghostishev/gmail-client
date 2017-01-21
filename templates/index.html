@@ -1,10 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
 <body>
+
+<div ng-app="myApp">
+    <div ng-controller="statusCtrl">Status: {$ storage.x $}</div>
+
+    <div ng-controller="loginCtrl">{$ code $}
+        <br>
+        <a href>
+            <img src="http://portal.tukenya.ac.ke/protected/extensions/googleauth/images/google-login-button.png"
+                 ng-click="go();"/>
+        </a>
+    </div>
+    <!--<div ng-controller="customersCtrl">-->
+    <!--<table>-->
+    <!--<tr ng-repeat="x in names">-->
+    <!--<td>{$ x.Name $}</td>-->
+    <!--<td>{$ x.Country $}</td>-->
+    <!--</tr>-->
+    <!--</table>-->
+    <!--</div>-->
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+<script>
+    var app = angular.module('myApp', ['ngStorage']);
+
+    app.config(function ($interpolateProvider) {
+        $interpolateProvider.startSymbol('{$');
+        $interpolateProvider.endSymbol('$}');
+    });
+
+    app.config(['$locationProvider', function ($locationProvider) {
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        });
+    }]);
+
+
+    //app.controller('customersCtrl', function($scope, $http) {
+    //    $http.get("http://www.w3schools.com/angular/customers.php")
+    //    .then(function (response) {$scope.names = response.data.records;});
+    //});
+    app.controller('statusCtrl', function ($scope, $sessionStorage) {
+        $scope.storage = $sessionStorage.$default({
+            x: 42
+        });
+//    if ($scope.token){
+//        $scope.status = '+';
+//    } else {
+//        $scope.status = '-';
+//    }
+    });
+
+    app.controller('loginCtrl', function ($scope, $location, $window) {
+//    $scope.code = 'qwe';
+        $scope.code = $location.search().code;
+        var host_url = $location.protocol() + '://' + $location.host() + ':' + $location.port();
+        var google_oauth2_url = 'https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=' + host_url + '&prompt=consent&response_type=code&client_id=566762824427-g68ni6q8sio89aod0qvonkb4vaoaf0uu.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/gmail.readonly&access_type=offline'
+
+        $scope.go = function () {
+            $window.location.href = google_oauth2_url;
+        };
+    });
+</script>
 
 </body>
 </html>
