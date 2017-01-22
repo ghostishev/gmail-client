@@ -7,20 +7,18 @@
 
 
     <div ng-controller="loginCtrl">
-        <a href>
-            <img src="http://portal.tukenya.ac.ke/protected/extensions/googleauth/images/google-login-button.png"
-                 ng-click="go();"/>
-        </a>
+        <a href ng-hide="status == 'ok'"><img src="http://portal.tukenya.ac.ke/protected/extensions/googleauth/images/google-login-button.png"
+                     ng-click="go();"/></a>
+        <div ng-show="status == 'ok'">
+            <a href ng-click="logout();">Logout</a><br>
+            <a href ng-click="get_all_messages();">Load messages</a> (may be slightly long. up to 1 minute)
+            <table border="0.1">
+                <tr ng-repeat="one_message in messages track by $index">
+                    <td>{$ one_message $}</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div ng-controller="statusCtrl">Status: {$ access_token $}</div>
-    <!--<div ng-controller="customersCtrl">-->
-    <!--<table>-->
-    <!--<tr ng-repeat="x in names">-->
-    <!--<td>{$ x.Name $}</td>-->
-    <!--<td>{$ x.Country $}</td>-->
-    <!--</tr>-->
-    <!--</table>-->
-    <!--</div>-->
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
@@ -39,27 +37,22 @@
         });
     }]);
 
-
-    //app.controller('customersCtrl', function($scope, $http) {
-    //    $http.get("http://www.w3schools.com/angular/customers.php")
-    //    .then(function (response) {$scope.names = response.data.records;});
-    //});
-    app.controller('statusCtrl', function ($scope, $localStorage) {
-        $scope.access_token = $localStorage.access_token;
-//    if ($scope.token){
-//        $scope.status = '+';
-//    } else {
-//        $scope.status = '-';
-//    }
-    });
-
-    app.controller('loginCtrl', function ($scope, $location, $window, $localStorage) {
+    app.controller('loginCtrl', function ($scope, $location, $window, $localStorage, $http) {
         var hash = $location.hash().split('&');
-        for (i=0; i < hash.length; i++) {
-            if (hash[i].startsWith("access_token")){
+        for (i = 0; i < hash.length; i++) {
+            if (hash[i].startsWith("access_token")) {
                 $localStorage.access_token = hash[i].split('=')[1]
             }
         }
+        if ($localStorage.access_token) {
+            $scope.status = 'ok';
+        } else {
+            $scope.status = 'fail';
+        }
+        $scope.logout = function () {
+            delete $localStorage.access_token;
+            $scope.status = 'fail';
+        };
 
         var host_url = encodeURIComponent($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/');
         var google_oauth2_url = 'https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=' + host_url + '&response_type=token&state=%2Fprofile&client_id=566762824427-vplbqmc6v72qv2tvnf7ht8pgol2o3ebb.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/gmail.readonly';
@@ -67,6 +60,13 @@
         $scope.go = function () {
             $window.location.href = google_oauth2_url;
         };
+
+        $scope.get_all_messages = function () {
+            $http.get('/api/v1/messages', {
+                headers: {'token': 'ya29.GlvbA_U-c0mMCWBbNyQzCazKf7cBmXFXVS1Xprs1aExiSMLYxQDRNYghwyU2qb1YkKtyuQXmpFHNotaggQKnRPgSk7V9T5kEevchQEjKSAHB3CRJGt-MO9kV3SSe'}
+            })
+            .then(function (response) {$scope.messages = response.data;});
+        }
     });
 
 </script>
