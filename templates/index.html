@@ -6,7 +6,7 @@
 <div ng-app="myApp">
     <div ng-controller="statusCtrl">Status: {$ storage.x $}</div>
 
-    <div ng-controller="loginCtrl">{$ code $}
+    <div ng-controller="loginCtrl">{$ access_token $}
         <br>
         <a href>
             <img src="http://portal.tukenya.ac.ke/protected/extensions/googleauth/images/google-login-button.png"
@@ -57,14 +57,15 @@
 
     app.controller('loginCtrl', function ($scope, $location, $window) {
 //    $scope.code = 'qwe';
-        $scope.code = $location.search().code;
-        var host_url = $location.protocol() + '://' + $location.host() + ':' + $location.port();
-        var google_oauth2_url = 'https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=' + host_url + '&prompt=consent&response_type=code&client_id=566762824427-g68ni6q8sio89aod0qvonkb4vaoaf0uu.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/gmail.readonly&access_type=offline'
+        $scope.access_token = $location.search().access_token;
+        var host_url = encodeURIComponent($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/');
+        var google_oauth2_url = 'https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=' + host_url + '&response_type=token&state=%2Fprofile&client_id=566762824427-vplbqmc6v72qv2tvnf7ht8pgol2o3ebb.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/gmail.readonly';
 
         $scope.go = function () {
             $window.location.href = google_oauth2_url;
         };
     });
+
 </script>
 
 </body>
