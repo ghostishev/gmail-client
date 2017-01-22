@@ -4,15 +4,15 @@
 <body>
 
 <div ng-app="myApp">
-    <div ng-controller="statusCtrl">Status: {$ storage.x $}</div>
 
-    <div ng-controller="loginCtrl">{$ access_token $}
-        <br>
+
+    <div ng-controller="loginCtrl">
         <a href>
             <img src="http://portal.tukenya.ac.ke/protected/extensions/googleauth/images/google-login-button.png"
                  ng-click="go();"/>
         </a>
     </div>
+    <div ng-controller="statusCtrl">Status: {$ access_token $}</div>
     <!--<div ng-controller="customersCtrl">-->
     <!--<table>-->
     <!--<tr ng-repeat="x in names">-->
@@ -44,10 +44,8 @@
     //    $http.get("http://www.w3schools.com/angular/customers.php")
     //    .then(function (response) {$scope.names = response.data.records;});
     //});
-    app.controller('statusCtrl', function ($scope, $sessionStorage) {
-        $scope.storage = $sessionStorage.$default({
-            x: 42
-        });
+    app.controller('statusCtrl', function ($scope, $localStorage) {
+        $scope.access_token = $localStorage.access_token;
 //    if ($scope.token){
 //        $scope.status = '+';
 //    } else {
@@ -55,11 +53,11 @@
 //    }
     });
 
-    app.controller('loginCtrl', function ($scope, $location, $window) {
+    app.controller('loginCtrl', function ($scope, $location, $window, $localStorage) {
         var hash = $location.hash().split('&');
         for (i=0; i < hash.length; i++) {
             if (hash[i].startsWith("access_token")){
-                $scope.access_token = hash[i].split('=')[1]
+                $localStorage.access_token = hash[i].split('=')[1]
             }
         }
 
