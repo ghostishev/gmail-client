@@ -11,7 +11,7 @@
                      ng-click="go();"/></a>
         <div ng-show="status == 'ok'">
             <a href ng-click="logout();">Logout</a><br>
-            <a href ng-click="get_all_messages();">Load messages</a> (may be slightly long. up to 1 minute)
+            <a href ng-click="get_all_messages();">Load messages</a> (may be slightly long. up to 1 minute at first time)
             <table border="0.1">
                 <tr ng-repeat="one_message in messages track by $index">
                     <td>{$ one_message $}</td>
@@ -63,7 +63,7 @@
 
         $scope.get_all_messages = function () {
             $http.get('/api/v1/messages', {
-                headers: {'token': 'ya29.GlvbA_U-c0mMCWBbNyQzCazKf7cBmXFXVS1Xprs1aExiSMLYxQDRNYghwyU2qb1YkKtyuQXmpFHNotaggQKnRPgSk7V9T5kEevchQEjKSAHB3CRJGt-MO9kV3SSe'}
+                headers: {'token': $localStorage.access_token}
             })
             .then(function (response) {$scope.messages = response.data;});
         }
