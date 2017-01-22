@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,4 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '566762824427-5m1mauv593ilsest4f4d8l8rfs1440a1.a
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'XIhK-MX6wWH9tZykCtwLDxFk'
 # SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/gmail.readonly', ]
+GOOGLE_MESSAGE_API_URL = 'https://www.googleapis.com/gmail/v1/users/me/messages/'

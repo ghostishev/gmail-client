@@ -56,8 +56,13 @@
     });
 
     app.controller('loginCtrl', function ($scope, $location, $window) {
-//    $scope.code = 'qwe';
-        $scope.access_token = $location.search().access_token;
+        var hash = $location.hash().split('&');
+        for (i=0; i < hash.length; i++) {
+            if (hash[i].startsWith("access_token")){
+                $scope.access_token = hash[i].split('=')[1]
+            }
+        }
+
         var host_url = encodeURIComponent($location.protocol() + '://' + $location.host() + ':' + $location.port() + '/');
         var google_oauth2_url = 'https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=' + host_url + '&response_type=token&state=%2Fprofile&client_id=566762824427-vplbqmc6v72qv2tvnf7ht8pgol2o3ebb.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/gmail.readonly';
 
